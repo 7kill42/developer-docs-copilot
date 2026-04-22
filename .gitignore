@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+
+data/raw/*.html
+data/chroma/
+data/processed/index_summary.json
+
+.env
