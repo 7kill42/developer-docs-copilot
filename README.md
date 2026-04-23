@@ -1,7 +1,6 @@
 # SQLAlchemy Upgrade Copilot
 
-一个 1 天版的 `developer-docs-copilot` MVP。  
-它只做一件事：基于 SQLAlchemy 官方文档回答问题，并附上引用来源和原始链接。
+基于 SQLAlchemy 官方文档回答问题，并附上引用来源和原始链接。
 
 ## 功能
 
@@ -95,7 +94,6 @@ streamlit run app.py
 
 ## 说明
 
-- 这是 1 天 MVP，不包含迁移规则检测和 FastAPI API。
 - 文档范围只覆盖少量核心页面，不是全站问答。
 - 如果没有足够证据，应用会明确说未找到答案，而不是自由发挥。
 - `qwen3-vl-rerank` 这类 rerank 模型不负责生成向量，不能直接替代 embedding 模型。
