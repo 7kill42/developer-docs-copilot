@@ -103,4 +103,3 @@ streamlit run app.py
 
 - 文档范围只覆盖少量核心页面，不是全站问答。
 - 如果没有足够证据，应用会明确说未找到答案，而不是自由发挥。
-- `qwen3-vl-rerank` 这类 rerank 模型不负责生成向量，不能直接替代 embedding 模型。
