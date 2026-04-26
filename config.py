@@ -31,7 +31,7 @@ class Settings:
         "CHROMA_COLLECTION_NAME", "sqlalchemy_docs"
     )
     docs_base_url: str = os.getenv("DOCS_BASE_URL", "https://docs.sqlalchemy.org/en/20/")
-    max_seed_pages: int = int(os.getenv("MAX_SEED_PAGES", "0"))
+    max_seed_pages: int = int(os.getenv("MAX_SEED_PAGES", "14"))
     chunk_token_target: int = int(os.getenv("CHUNK_TOKEN_TARGET", "450"))
     top_k: int = int(os.getenv("TOP_K", "6"))
     retrieve_k: int = int(os.getenv("RETRIEVE_K", "18"))
