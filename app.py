@@ -6,7 +6,7 @@ from typing import Any
 import streamlit as st
 
 from config import PROCESSED_DIR
-from eval import load_eval_questions, run_retrieval_eval
+from evals import load_eval_questions, run_retrieval_eval
 from ingest import build_index, estimate_tokens
 from rag import answer_question, has_index, load_index_summary
 
