@@ -11,7 +11,11 @@ from ingest import build_index, estimate_tokens
 from rag import answer_question, has_index, load_index_summary
 
 
-st.set_page_config(page_title="SQLAlchemy Upgrade Copilot", page_icon=":books:", layout="wide")
+st.set_page_config(
+    page_title="Developer Docs Copilot: SQLAlchemy RAG Assistant",
+    page_icon=":books:",
+    layout="wide",
+)
 
 
 DOC_TYPE_LABELS = {
@@ -116,8 +120,8 @@ def _render_answer_block(result: dict[str, Any]) -> None:
             st.link_button("查看官方原文", citation["url"], key=f"citation-{idx}-{citation['url']}")
 
 
-st.title("SQLAlchemy Upgrade Copilot")
-st.caption("基于 SQLAlchemy 官方文档的 RAG 问答助手，回答附带引用来源与原始链接。")
+st.title("Developer Docs Copilot: SQLAlchemy RAG Assistant")
+st.caption("基于 SQLAlchemy 官方文档的开发文档 Copilot，回答附带引用来源与原始链接。")
 
 if "last_result" not in st.session_state:
     st.session_state["last_result"] = None
