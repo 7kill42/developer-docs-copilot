@@ -13,6 +13,7 @@ from openai import APIConnectionError, APIStatusError, OpenAI
 
 from config import PROCESSED_DIR, settings
 from prompts import SYSTEM_PROMPT, build_user_prompt
+from verifier import verify_answer
 
 
 def _get_openai_client() -> OpenAI:
@@ -724,10 +725,34 @@ def answer_question(question: str, *, include_debug: bool = False) -> dict[str, 
             }
         )
 
+    verification = verify_answer(
+        payload.get("answer", "").strip(),
+        trimmed_citations,
+        example_code=payload.get("example_code", "").strip(),
+    )
+
+    answer_text = payload.get("answer", "未在已索引文档中找到明确答案。").strip()
+    example_code = payload.get("example_code", "").strip()
+    if not verification["is_grounded"]:
+        if verification["coverage_ratio"] < 0.35:
+            answer_text = (
+                "当前检索片段不足以充分支撑这个回答，我暂时不能基于官方文档给出可靠结论。"
+                "你可以查看下面引用的章节，或换一个更具体的问题。"
+            )
+            example_code = ""
+        else:
+            answer_text = (
+                f"{answer_text}\n\n注：当前检索片段对其中部分结论支撑不足，"
+                "建议优先核对下面引用的官方章节。"
+            )
+            if verification["unsupported_code_tokens"]:
+                example_code = ""
+
     result = {
-        "answer": payload.get("answer", "未在已索引文档中找到明确答案。").strip(),
-        "example_code": payload.get("example_code", "").strip(),
+        "answer": answer_text,
+        "example_code": example_code,
         "citations": trimmed_citations,
+        "verification": verification,
     }
     if include_debug:
         result["debug"] = debug
