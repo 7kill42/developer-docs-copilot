@@ -101,6 +101,10 @@ def _render_answer_block(result: dict[str, Any]) -> None:
     st.subheader("回答")
     st.write(result["answer"])
 
+    verification = result.get("verification", {})
+    if verification and not verification.get("is_grounded", True):
+        st.warning(verification.get("suggestion", "当前回答存在部分证据不足的结论，建议核对下面的官方引用。"))
+
     if result["example_code"]:
         st.subheader("示例代码")
         st.code(result["example_code"], language="python")
@@ -195,6 +199,7 @@ with highlights_tab:
 - 混合检索：同一套问题同时展示 `纯向量`、`BM25 + 向量`、`rerank` 三个阶段的差异。
 - 结构化 chunk：按 section 切分文档，并把 token 数、代码示例标记和 section anchor 一起暴露出来。
 - 可解释 RAG：把实时检索过程拆成可视化步骤，而不是只给最终回答。
+- 回答校验：生成后会做一次 groundedness 检查，证据不足时补充提示或直接拒答。
 """
     )
 
