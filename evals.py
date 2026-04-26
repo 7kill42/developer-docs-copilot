@@ -158,13 +158,14 @@ def run_answer_eval(
         should_refuse = bool(case.get("should_refuse", False))
         did_refuse = _is_refusal(answer_payload.get("answer", ""))
         citation_count = len(answer_payload.get("citations", []))
+        verification = answer_payload.get("verification", {})
 
         if should_refuse and did_refuse:
             refusal_hits += 1
         if not should_refuse:
             supported_cases += 1
             keyword_ratios.append(keyword_ratio)
-            grounded_keyword_ratios.append(keyword_ratio if citation_count > 0 else 0.0)
+            grounded_keyword_ratios.append(float(verification.get("coverage_ratio", 0.0)))
 
         question_rows.append(
             {
@@ -174,6 +175,8 @@ def run_answer_eval(
                 "did_refuse": int(did_refuse),
                 "keyword_ratio": round(keyword_ratio, 3),
                 "citation_count": citation_count,
+                "is_grounded": int(bool(verification.get("is_grounded", False))),
+                "grounding_coverage": round(float(verification.get("coverage_ratio", 0.0)), 3),
                 "answer_preview": answer_payload.get("answer", "")[:120],
             }
         )
@@ -288,6 +291,8 @@ def main() -> None:
                 "should_refuse",
                 "did_refuse",
                 "keyword_ratio",
+                "is_grounded",
+                "grounding_coverage",
                 "citation_count",
             ],
         )
