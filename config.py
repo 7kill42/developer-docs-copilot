@@ -24,14 +24,14 @@ class Settings:
     )
     openai_chat_model: str = os.getenv("OPENAI_CHAT_MODEL", "qwen3.6-flash")
     openai_embedding_model: str = os.getenv(
-        "OPENAI_EMBEDDING_MODEL", "text-embedding-v3"
+        "OPENAI_EMBEDDING_MODEL", "text-embedding-v4"
     )
     chroma_path: Path = Path(os.getenv("CHROMA_PERSIST_DIR", str(CHROMA_DIR)))
     chroma_collection_name: str = os.getenv(
         "CHROMA_COLLECTION_NAME", "sqlalchemy_docs"
     )
     docs_base_url: str = os.getenv("DOCS_BASE_URL", "https://docs.sqlalchemy.org/en/20/")
-    max_seed_pages: int = int(os.getenv("MAX_SEED_PAGES", "6"))
+    max_seed_pages: int = int(os.getenv("MAX_SEED_PAGES", "0"))
     chunk_token_target: int = int(os.getenv("CHUNK_TOKEN_TARGET", "450"))
     top_k: int = int(os.getenv("TOP_K", "6"))
     retrieve_k: int = int(os.getenv("RETRIEVE_K", "18"))
