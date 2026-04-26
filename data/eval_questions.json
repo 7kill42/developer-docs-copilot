@@ -1,0 +1,32 @@
+[
+  {
+    "question": "SQLAlchemy 2.0 推荐怎么写 select 查询？",
+    "expected_keywords": ["select()", "Session.execute", "scalars"],
+    "expected_doc_types": ["tutorial", "orm_querying_guide"],
+    "expected_url_keywords": ["tutorial/data_select", "queryguide/select"]
+  },
+  {
+    "question": "Session 的推荐使用方式是什么？",
+    "expected_keywords": ["Session", "transaction", "sessionmaker"],
+    "expected_doc_types": ["tutorial"],
+    "expected_url_keywords": ["orm/session_basics"]
+  },
+  {
+    "question": "SQLAlchemy 2.0 和旧版 query 风格有什么区别？",
+    "expected_keywords": ["legacy", "Query", "select()"],
+    "expected_doc_types": ["migration_guide", "orm_querying_guide"],
+    "expected_url_keywords": ["migration_20", "queryguide/query"]
+  },
+  {
+    "question": "joinedload 预加载怎么用？",
+    "expected_keywords": ["joinedload", "relationship", "eager"],
+    "expected_doc_types": ["orm_querying_guide"],
+    "expected_url_keywords": ["queryguide/relationships"]
+  },
+  {
+    "question": "AsyncSession 推荐怎么初始化？",
+    "expected_keywords": ["AsyncSession", "async_sessionmaker", "create_async_engine"],
+    "expected_doc_types": ["asyncio_guide"],
+    "expected_url_keywords": ["extensions/asyncio"]
+  }
+]
