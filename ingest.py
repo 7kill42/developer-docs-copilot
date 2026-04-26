@@ -444,6 +444,7 @@ def build_index() -> dict:
     if not settings.has_openai_key:
         raise RuntimeError("OPENAI_API_KEY 未配置，无法构建向量索引。")
 
+    selected_pages = _selected_seed_pages()
     chunks = crawl_and_parse_docs()
     if not chunks:
         raise RuntimeError("没有解析出可索引的文档块。")
