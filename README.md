@@ -14,6 +14,7 @@
 - **文档 ETL Pipeline：** 自动抓取 SQLAlchemy 官方文档，解析标题层级、正文与代码块，并生成结构化 chunk。
 - **Hybrid Retrieval：** 结合向量检索、BM25、关键词匹配、文档类型加权和章节匹配，提高中文问题到英文技术文档的召回效果。
 - **Grounded Generation：** 答案仅基于检索上下文生成，并返回官方文档 citation，降低幻觉风险。
+- **Groundedness Verifier：** 回答生成后会再做一次规则型校验，检查关键结论和代码符号是否能在 citation 片段中找到依据。
 - **Low-confidence Refusal：** 当检索相关性低于阈值时拒答，避免无依据生成。
 - **Production-oriented Design：** 支持索引刷新、接口重试、环境变量配置和本地持久化向量库。
 
@@ -31,6 +32,8 @@ Score Fusion / Rerank
 Context Builder
     ↓
 LLM Answer Generator
+    ↓
+Groundedness Verifier
     ↓
 Citation Display + Refusal Check
 ```
@@ -61,6 +64,7 @@ developer-docs-copilot/
 ├── ingest.py
 ├── prompts.py
 ├── rag.py
+├── verifier.py
 ├── requirements.txt
 ├── .env.example
 ├── README.md
@@ -169,6 +173,7 @@ python3 eval/eval_answer.py
 - `Recall@3 / Recall@6`
 - 回答包含预期关键词的比例
 - grounded answer ratio
+- grounding coverage
 - refusal accuracy
 - 平均检索耗时
 
@@ -177,6 +182,7 @@ python3 eval/eval_answer.py
 - 怎么判断 hybrid retrieval 是否比纯向量更好
 - 怎么看 citation 是否来自更相关的章节
 - 怎么在低证据场景下拒答而不是自由发挥
+- 怎么在生成后再检查回答是否真的被引用片段支撑
 
 ## 设计决策
 
@@ -196,7 +202,7 @@ python3 eval/eval_answer.py
 
 - 文档范围只覆盖少量核心页面，不是全站问答。
 - 检索阶段使用向量召回和 BM25 词项相关性融合，再结合章节规则做轻量重排。
-- 如果没有足够证据，应用会明确说未找到答案，而不是自由发挥。
+- 回答生成后还会做一次 groundedness verification，证据不足时会提示用户核对引用，严重不足时会直接拒答。
 - `qwen3-vl-rerank` 这类 rerank 模型不负责生成向量，不能直接替代 embedding 模型。
 
 ## 已知限制
