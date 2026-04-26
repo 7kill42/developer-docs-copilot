@@ -25,6 +25,8 @@
 developer-docs-copilot/
 ├── app.py
 ├── config.py
+├── DESIGN.md
+├── eval.py
 ├── ingest.py
 ├── prompts.py
 ├── rag.py
@@ -66,7 +68,10 @@ OPENAI_API_KEY=...
 OPENAI_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
 OPENAI_CHAT_MODEL=qwen3.6-flash
 OPENAI_EMBEDDING_MODEL=text-embedding-v4
+MAX_SEED_PAGES=0
 ```
+
+其中 `MAX_SEED_PAGES=0` 表示默认索引全部内置种子页；如果想缩小抓取范围，可以改成具体数字。
 
 3. 启动应用
 
@@ -93,6 +98,46 @@ streamlit run app.py
 - `asyncio`
 - `migration_20`
 
+## 技术亮点页
+
+Streamlit 页面里除了问答页，还增加了一个 `Technical Highlights` 视图，用来展示：
+
+- `纯向量` vs `BM25 + 向量` vs `rerank` 的 mini eval 对比
+- 某个官方文档页面被切成了哪些 chunk
+- 一次提问的实时检索轨迹：向量召回、BM25、融合结果、最终送给模型的上下文
+
+这部分主要是为了让面试官能在几分钟内快速看懂项目深度，而不是只看到一个聊天框。
+
+## 评测
+
+项目内置了一个 5 题的小型评测集，位于 [data/eval_questions.json](data/eval_questions.json)。
+
+运行方式：
+
+```bash
+python3 eval.py
+```
+
+如果只想看检索指标，不跑生成：
+
+```bash
+python3 eval.py --skip-generation
+```
+
+当前评测会输出：
+
+- `Recall@3 / Recall@6`
+- 回答包含预期关键词的比例
+- 平均检索耗时
+
+## 设计决策
+
+关键设计说明见 [DESIGN.md](DESIGN.md)：
+
+- 为什么选择 `BM25 + 向量` 混合检索
+- 为什么 chunk 采用 section 粒度而不是固定 token 窗口
+- 为什么 citation 要加 section anchor
+
 ## 推荐 demo 问题
 
 - `SQLAlchemy 2.0 推荐怎么写 select 查询？`
@@ -102,5 +147,13 @@ streamlit run app.py
 ## 说明
 
 - 文档范围只覆盖少量核心页面，不是全站问答。
+- 检索阶段使用向量召回和 BM25 词项相关性融合，再结合章节规则做轻量重排。
 - 如果没有足够证据，应用会明确说未找到答案，而不是自由发挥。
 - `qwen3-vl-rerank` 这类 rerank 模型不负责生成向量，不能直接替代 embedding 模型。
+
+## 已知限制
+
+- 当前只索引了 14 个 SQLAlchemy 核心页面，不是全站问答系统。
+- 对于“如何调试 SQLAlchemy 性能问题”这类更偏操作经验、排障经验的问题，效果会受到文档覆盖范围限制。
+- 当前没有做多轮对话记忆，每次提问都按单轮检索与回答处理。
+- mini eval 规模还比较小，更适合作为 demo 和优化对比，而不是严格学术评测。
